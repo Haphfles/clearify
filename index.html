@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keep it Clear - Clear Mobile</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #fff;
+            color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            border: 2px solid #000;
+            padding: 20px;
+            text-align: center;
+            max-width: 400px;
+        }
+        h1 {
+            font-size: 20px;
+            margin: 0 0 20px 0;
+            text-transform: uppercase;
+        }
+        input {
+            width: 80%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #000;
+            background: #fff;
+            font-family: 'Courier New', monospace;
+        }
+        button {
+            padding: 8px 16px;
+            background: #000;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+        }
+        button:hover {
+            background: #333;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Keep it Clear</h1>
+        <input type="text" id="urlInput" placeholder="URL goes here">
+        <button onclick="summarize()">Summarize</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function summarize() {
+            const url = document.getElementById('urlInput').value;
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = "Clearing the noise...";
+
+            try {
+                // Step 1: Fetch URL content with a different proxy
+                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+                const response = await fetch(proxyUrl);
+                if (!response.ok) throw new Error(`Proxy fetch failed: ${response.status}`);
+                console.log('Proxy response:', response);
+                const content = await response.text();
+                console.log('Content fetched:', content.slice(0, 100));
+
+                // Step 2: Extract text (skip DOM parsing for PDFs)
+                let text = content;
+                if (url.endsWith('.pdf')) {
+                    // For PDFs, assume raw text or limit scope (basic handling)
+                    text = content.slice(0, 1000); // Rough cut for prototype
+                } else {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(content, 'text/html');
+                    text = doc.body.innerText.slice(0, 1000);
+                }
+                if (!text) throw new Error('No text extracted');
+                console.log('Text extracted:', text.slice(0, 100));
+
+                // Step 3: Summarize with Hugging Face
+                const apiUrl = 'https://api-inference.huggingface.co/models/facebook/bart-large-cnn';
+                const apiResponse = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer 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'
+                    },
+                    body: JSON.stringify({ inputs: text, parameters: { max_length: 50 } })
+                });
+                if (!apiResponse.ok) throw new Error(`API failed: ${apiResponse.status}`);
+                console.log('API response:', apiResponse);
+                const data = await apiResponse.json();
+                console.log('API data:', data);
+                const summary = data[0]?.summary_text || "Nada worth summarizing!";
+
+                // Step 4: Add humor
+                const funnySummary = `${summary} ...Less yak, more zap!`;
+                resultDiv.innerHTML = funnySummary;
+            } catch (error) {
+                resultDiv.innerHTML = "Yikes, that URL broke us! Try another.";
+                console.error('Error details:', error);
+            }
+        }
+    </script>
+</body>
+</html>
