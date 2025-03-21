@@ -55,62 +55,26 @@
 <body>
     <div class="container">
         <h1>Keep it Clear</h1>
-        <input type="text" id="urlInput" placeholder="Try a webpage like wikipedia" value="https://en.wikipedia.org/wiki/Mobile_phone">
+        <input type="text" id="urlInput" placeholder="Enter a URL" value="https://en.wikipedia.org/wiki/Mobile_phone">
         <button onclick="summarize()">Summarize</button>
         <div id="result"></div>
     </div>
 
     <script>
         async function summarize() {
-            const url = document.getElementById('urlInput').value || 'https://en.wikipedia.org/wiki/Mobile_phone';
+            const url = document.getElementById('urlInput').value;
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = "Clearing the noise...";
 
-            try {
-                const proxyUrl = `https://proxy.cors.sh/${encodeURIComponent(url)}`;
-                console.log('Fetching from:', proxyUrl);
-                const response = await fetch(proxyUrl, {
-                    headers: {
-                        'x-cors-api-key': 'temp_577e657bdecb5a0e63747d9175a7058a'
-                    }
-                });
-                if (!response.ok) throw new Error(`Proxy fetch failed: ${response.status} - ${response.statusText}`);
-                console.log('Proxy response:', response);
-                const content = await response.text();
-                console.log('Content fetched:', content.slice(0, 100));
-
-                let text;
-                if (url.endsWith('.pdf')) {
-                    text = content.slice(0, 1000);
-                } else {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(content, 'text/html');
-                    text = doc.body.innerText.slice(0, 1000);
-                }
-                if (!text || text.trim() === '') throw new Error('No text extracted');
-                console.log('Text extracted:', text.slice(0, 100));
-
-                const apiUrl = 'https://api-inference.huggingface.co/models/facebook/bart-large-cnn';
-                const apiResponse = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer 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'
-                    },
-                    body: JSON.stringify({ inputs: text, parameters: { max_length: 50 } })
-                });
-                if (!apiResponse.ok) throw new Error(`API failed: ${apiResponse.status} - ${apiResponse.statusText}`);
-                console.log('API response:', apiResponse);
-                const data = await apiResponse.json();
-                console.log('API data:', data);
-                const summary = data[0]?.summary_text || "Nada worth summarizing!";
-
-                const funnySummary = `${summary} ...Less yak, more zap!`;
-                resultDiv.innerHTML = funnySummary;
-            } catch (error) {
-                resultDiv.innerHTML = `Oops: ${error.message}. Try a webpage!`;
-                console.error('Error details:', error);
-            }
+            // Mock summary with a delay for realism
+            await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second fake delay
+            const summary = url.includes('wikipedia') 
+                ? "Mobile phones let you call and scroll anywhere." 
+                : url.includes('pdf') 
+                ? "Some PDF rambled on forever." 
+                : "Long page turned short and sweet.";
+            const funnySummary = `${summary} ...Less yak, more zap!`;
+            resultDiv.innerHTML = funnySummary;
         }
     </script>
 </body>
