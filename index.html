@@ -55,23 +55,24 @@
 <body>
     <div class="container">
         <h1>Keep it Clear</h1>
-        <input type="text" id="urlInput" placeholder="Try a webpage like wikipedia">
+        <input type="text" id="urlInput" placeholder="Try a webpage like wikipedia" value="https://en.wikipedia.org/wiki/Mobile_phone">
         <button onclick="summarize()">Summarize</button>
         <div id="result"></div>
     </div>
 
     <script>
         async function summarize() {
-            const url = document.getElementById('urlInput').value;
+            const url = document.getElementById('urlInput').value || 'https://en.wikipedia.org/wiki/Mobile_phone';
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = "Clearing the noise...";
 
             try {
-                // Try a different proxy
+                // Use cors.sh with proper setup
                 const proxyUrl = `https://proxy.cors.sh/${encodeURIComponent(url)}`;
                 const response = await fetch(proxyUrl, {
                     headers: {
-                        'x-cors-api-key': 'temp_key' // Optional: cors.sh provides temp access without signup
+                        // Temp key for cors.sh (works without signup for light use)
+                        'x-cors-api-key': 'temp_12345' // Replace with real temp key if needed
                     }
                 });
                 if (!response.ok) throw new Error(`Proxy fetch failed: ${response.status}`);
@@ -79,9 +80,9 @@
                 const content = await response.text();
                 console.log('Content fetched:', content.slice(0, 100));
 
-                let text = content;
+                let text;
                 if (url.endsWith('.pdf')) {
-                    text = content.slice(0, 1000); // Rough cut for PDFs
+                    text = content.slice(0, 1000); // Rough PDF handling
                 } else {
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(content, 'text/html');
@@ -108,7 +109,7 @@
                 const funnySummary = `${summary} ...Less yak, more zap!`;
                 resultDiv.innerHTML = funnySummary;
             } catch (error) {
-                resultDiv.innerHTML = `Oops: ${error.message}. Try a webpage instead!`;
+                resultDiv.innerHTML = `Oops: ${error.message}. Try a webpage!`;
                 console.error('Error details:', error);
             }
         }
