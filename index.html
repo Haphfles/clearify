@@ -67,12 +67,10 @@
             resultDiv.innerHTML = "Clearing the noise...";
 
             try {
-                // Use cors.sh with proper setup
                 const proxyUrl = `https://proxy.cors.sh/${encodeURIComponent(url)}`;
                 const response = await fetch(proxyUrl, {
                     headers: {
-                        // Temp key for cors.sh (works without signup for light use)
-                        'x-cors-api-key': 'temp_12345' // Replace with real temp key if needed
+                        'x-cors-api-key': 'temp_577e657bdecb5a0e63747d9175a7058a'
                     }
                 });
                 if (!response.ok) throw new Error(`Proxy fetch failed: ${response.status}`);
