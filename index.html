@@ -68,19 +68,20 @@
 
             try {
                 const proxyUrl = `https://proxy.cors.sh/${encodeURIComponent(url)}`;
+                console.log('Fetching from:', proxyUrl);
                 const response = await fetch(proxyUrl, {
                     headers: {
                         'x-cors-api-key': 'temp_577e657bdecb5a0e63747d9175a7058a'
                     }
                 });
-                if (!response.ok) throw new Error(`Proxy fetch failed: ${response.status}`);
+                if (!response.ok) throw new Error(`Proxy fetch failed: ${response.status} - ${response.statusText}`);
                 console.log('Proxy response:', response);
                 const content = await response.text();
                 console.log('Content fetched:', content.slice(0, 100));
 
                 let text;
                 if (url.endsWith('.pdf')) {
-                    text = content.slice(0, 1000); // Rough PDF handling
+                    text = content.slice(0, 1000);
                 } else {
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(content, 'text/html');
@@ -98,7 +99,7 @@
                     },
                     body: JSON.stringify({ inputs: text, parameters: { max_length: 50 } })
                 });
-                if (!apiResponse.ok) throw new Error(`API failed: ${apiResponse.status}`);
+                if (!apiResponse.ok) throw new Error(`API failed: ${apiResponse.status} - ${apiResponse.statusText}`);
                 console.log('API response:', apiResponse);
                 const data = await apiResponse.json();
                 console.log('API data:', data);
