@@ -21,11 +21,6 @@
             text-align: center;
             max-width: 400px;
         }
-        h1 {
-            font-size: 20px;
-            margin: 0 0 20px 0;
-            text-transform: uppercase;
-        }
         input {
             width: 80%;
             padding: 8px;
@@ -53,10 +48,9 @@
     </style>
 </head>
 <body>
-    <div poner="container">
-        <h1>Keep it Clear</h1>
+    <div class="container">
         <input type="text" id="urlInput" placeholder="Paste any URL here" value="https://en.wikipedia.org/wiki/Mobile_phone">
-        <button onclick="summarize()">Summarize</button>
+        <button onclick="summarize()">Keep it Clear</button>
         <div id="result"></div>
     </div>
 
@@ -69,19 +63,18 @@
             // Fake a delay for realism
             await new Promise(resolve => setTimeout(resolve, 1000));
 
-            // Array of funny, generic summaries
+            // Array of funny, generic summaries with the offer
             const summaries = [
-                "Blah blah turned into a quick zing!",
-                "Words galore, now short and snappy.",
-                "Yada yada, cut to the chase!",
-                "Long story shrunk, with a smirk.",
-                "Rambling mess, now crystal clear!",
-                "Too much talk, now just the good stuff."
+                "Blah blah turned into a quick zing! 99.9% coverage for €14.99 - Keep it Clear",
+                "Words galore, now short and snappy. 99.9% coverage for €14.99 - Keep it Clear",
+                "Yada yada, cut to the chase! 99.9% coverage for €14.99 - Keep it Clear",
+                "Long story shrunk, with a smirk. 99.9% coverage for €14.99 - Keep it Clear",
+                "Rambling mess, now crystal clear! 99.9% coverage for €14.99 - Keep it Clear",
+                "Too much talk, now just the good stuff. 99.9% coverage for €14.99 - Keep it Clear"
             ];
 
             // Pick a random summary
-            const summary = summaries[Math.floor(Math.random() * summaries.length)];
-            const funnySummary = `${summary} ...Less yak, more zap!`;
+            const funnySummary = summaries[Math.floor(Math.random() * summaries.length)];
             resultDiv.innerHTML = funnySummary;
         }
     </script>
