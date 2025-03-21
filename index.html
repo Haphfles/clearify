@@ -53,9 +53,9 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div poner="container">
         <h1>Keep it Clear</h1>
-        <input type="text" id="urlInput" placeholder="Enter a URL" value="https://en.wikipedia.org/wiki/Mobile_phone">
+        <input type="text" id="urlInput" placeholder="Paste any URL here" value="https://en.wikipedia.org/wiki/Mobile_phone">
         <button onclick="summarize()">Summarize</button>
         <div id="result"></div>
     </div>
@@ -66,13 +66,21 @@
             const resultDiv = document.getElementById('result');
             resultDiv.innerHTML = "Clearing the noise...";
 
-            // Mock summary with a delay for realism
-            await new Promise(resolve => setTimeout(resolve, 1000)); // 1-second fake delay
-            const summary = url.includes('wikipedia') 
-                ? "Mobile phones let you call and scroll anywhere." 
-                : url.includes('pdf') 
-                ? "Some PDF rambled on forever." 
-                : "Long page turned short and sweet.";
+            // Fake a delay for realism
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Array of funny, generic summaries
+            const summaries = [
+                "Blah blah turned into a quick zing!",
+                "Words galore, now short and snappy.",
+                "Yada yada, cut to the chase!",
+                "Long story shrunk, with a smirk.",
+                "Rambling mess, now crystal clear!",
+                "Too much talk, now just the good stuff."
+            ];
+
+            // Pick a random summary
+            const summary = summaries[Math.floor(Math.random() * summaries.length)];
             const funnySummary = `${summary} ...Less yak, more zap!`;
             resultDiv.innerHTML = funnySummary;
         }
