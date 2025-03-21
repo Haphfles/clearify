@@ -55,7 +55,7 @@
 <body>
     <div class="container">
         <h1>Keep it Clear</h1>
-        <input type="text" id="urlInput" placeholder="URL goes here">
+        <input type="text" id="urlInput" placeholder="Try a webpage like wikipedia">
         <button onclick="summarize()">Summarize</button>
         <div id="result"></div>
     </div>
@@ -67,8 +67,13 @@
             resultDiv.innerHTML = "Clearing the noise...";
 
             try {
-                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-                const response = await fetch(proxyUrl);
+                // Try a different proxy
+                const proxyUrl = `https://proxy.cors.sh/${encodeURIComponent(url)}`;
+                const response = await fetch(proxyUrl, {
+                    headers: {
+                        'x-cors-api-key': 'temp_key' // Optional: cors.sh provides temp access without signup
+                    }
+                });
                 if (!response.ok) throw new Error(`Proxy fetch failed: ${response.status}`);
                 console.log('Proxy response:', response);
                 const content = await response.text();
@@ -103,7 +108,7 @@
                 const funnySummary = `${summary} ...Less yak, more zap!`;
                 resultDiv.innerHTML = funnySummary;
             } catch (error) {
-                resultDiv.innerHTML = `Oops: ${error.message}. Try a different URL!`;
+                resultDiv.innerHTML = `Oops: ${error.message}. Try a webpage instead!`;
                 console.error('Error details:', error);
             }
         }
